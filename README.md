@@ -1,210 +1,280 @@
 # 📚 Library Management System
 
-A robust, console-based **Java Library Management System** built with **Core Java, JDBC (Java Database Connectivity), and MySQL**. The project follows clean architecture principles, utilizing the **DAO (Data Access Object) Design Pattern**, **Encapsulation**, **JDBC Transactions**, and **Validation Utilities**.
+A console-based **Library Management System** developed using **Core Java, OOP, JDBC, and MySQL**.
 
-**Author:** Junaid Khan
+The system helps manage books and library members, issue and return books, track book availability, and calculate late-return fines.
 
----
+## 🚀 Features
 
-## 📋 Project Description
-
-The **Library Management System** automates core library administration workflows. It allows librarians to manage books and members, issue and return books, track copy availability in real-time, enforce database transactions, calculate late return fines, and handle user input validation cleanly.
-
----
-
-## ✨ Features
-
-### 📖 Book Management
-- **Add New Books**: Register books with title, author, category, total quantity, and available copies.
-- **View All Books**: Display books in a neatly formatted, truncated console table.
-- **Search Books**: Look up books by **Book ID** or partial **Title** match (`LIKE`).
-- **Update Books**: Edit existing book details with default fallback prompts.
-- **Delete Books**: Safely delete book records with user confirmation safeguards.
-
-### 👤 Member Management
-- **Register Members**: Add members with full name, email, and phone number.
-- **Duplicate Email Prevention**: Pre-checks DB to prevent registering existing emails.
-- **View Members**: Formatted table overview of registered library members.
-- **Search & Update Members**: Search by name and update contact details.
-
-### 🔄 Book Issue & Return (ACID Transactions)
-- **Issue Book**:
-  - Validates copy availability (`available > 0`).
-  - Decrements available book count in `books`.
-  - Creates an `issued_books` record with issue date, due date (+14 days), and `ISSUED` status.
-  - Executed inside a **JDBC Transaction** (`setAutoCommit(false)`, `commit()`, `rollback()`).
-- **Return Book**:
-  - Prevents returning an already returned book.
-  - Updates `issued_books` with return date and changes status to `RETURNED`.
-  - Increments available copy count in `books`.
-  - Transactionally protected against partial database updates.
-
-### 💰 Fine Calculation Utility
-- **Standard Loan Period**: 14 days.
-- **Fine Rate**: ₹10 per overdue day.
-- Uses Java 8+ `LocalDate` and `ChronoUnit.DAYS` for accurate date arithmetic.
-- Calculates late days and total fine for returned and active overdue books.
-
-### 🛡️ Input Validation & Error Handling
-- Checks for empty strings, positive quantities, non-negative availability, and valid email/phone formats (`Regex`).
-- Translates raw MySQL error codes (e.g., duplicate entry `1062`, FK violation `1452`) into clear, actionable error messages.
-
----
-
-## 📁 Folder Structure
-
-```text
-Library-Management-System/
-├── src/
-│   ├── database/
-│   │   └── DBConnection.java       # Manages MySQL Connection via JDBC
-│   ├── model/
-│   │   ├── Book.java               # Book entity model (Encapsulated)
-│   │   ├── Member.java             # Member entity model (Encapsulated)
-│   │   └── IssueRecord.java        # Issue/Return record model
-│   ├── dao/
-│   │   ├── BookDAO.java            # Interface for Book CRUD operations
-│   │   ├── BookDAOImpl.java        # Implementation of Book DAO using JDBC
-│   │   ├── MemberDAO.java          # Interface for Member operations
-│   │   ├── MemberDAOImpl.java      # Implementation of Member DAO
-│   │   ├── IssueDAO.java           # Interface for Issue/Return operations
-│   │   └── IssueDAOImpl.java       # Implementation with JDBC Transactions
-│   ├── util/
-│   │   ├── FineCalculator.java     # Fine calculation logic & reports
-│   │   └── Validator.java          # Input & SQL error validation utility
-│   └── Main.java                   # Console menu interface & entry point
-├── sql/
-│   └── schema.sql                  # Database creation and sample data script
-├── README.md                       # Project documentation
-└── .gitignore                      # Git ignore rules for Java binaries
-```
-
----
+- 📖 Add, view, search, update, and delete books
+- 👤 Add and view library members
+- 📚 Issue books to members
+- 🔄 Return issued books
+- 📊 Track available book copies
+- 💰 Calculate fines for late returns
+- ✅ Input validation
+- 🔐 Database connectivity using JDBC
+- 🔄 Transaction handling for issue/return operations
 
 ## 🛠️ Technologies Used
 
 | Technology | Purpose |
 |---|---|
-| **Java 17+** | Core programming language |
-| **JDBC** | Database connectivity & SQL execution (`PreparedStatement`, `ResultSet`) |
-| **MySQL Database** | Relational data storage |
-| **MySQL Connector/J** | JDBC driver for MySQL |
-| **Java Time API** | `LocalDate`, `ChronoUnit` for date arithmetic |
+| Java | Application development |
+| OOP | Encapsulation, abstraction, and interfaces |
+| JDBC | Java-MySQL connectivity |
+| MySQL | Database management |
+| DAO Pattern | Data access layer |
+| Git | Version control |
+| GitHub | Source code hosting |
 
----
+## 🏗️ Project Structure
 
-## 🗄️ Database Schema
-
-### 1. `books` Table
-```sql
-CREATE TABLE books (
-    book_id INT PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(100) NOT NULL,
-    author VARCHAR(100) NOT NULL,
-    category VARCHAR(50),
-    quantity INT NOT NULL,
-    available INT NOT NULL
-);
+```text
+Library-Management-System
+│
+├── src
+│   ├── dao
+│   │   ├── BookDAO.java
+│   │   ├── BookDAOImpl.java
+│   │   ├── IssueDAO.java
+│   │   ├── IssueDAOImpl.java
+│   │   ├── MemberDAO.java
+│   │   └── MemberDAOImpl.java
+│   │
+│   ├── database
+│   │   └── DBConnection.java
+│   │
+│   ├── model
+│   │   ├── Book.java
+│   │   ├── IssueRecord.java
+│   │   └── Member.java
+│   │
+│   ├── service
+│   │   └── LibraryService.java
+│   │
+│   ├── util
+│   │   ├── FineCalculator.java
+│   │   ├── InputHelper.java
+│   │   └── Validator.java
+│   │
+│   └── Main.java
+│
+├── sql
+│   └── schema.sql
+│
+├── lib
+│   └── mysql-connector-j-26.7.0.jar
+│
+├── .gitignore
+├── LICENSE
+└── README.md
 ```
 
-### 2. `members` Table
-```sql
-CREATE TABLE members (
-    member_id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE,
-    phone VARCHAR(15)
-);
+## 🗄️ Database
+
+The project uses **MySQL** with the following main tables:
+
+- `books`
+- `members`
+- `issued_books`
+
+The `books` table stores book information such as title, author, category, quantity, and available copies.
+
+The `members` table stores library member details.
+
+The `issued_books` table stores book issue details including issue date, due date, return date, and status.
+
+## ▶️ How to Run
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/rohineesh5/Library-Management-System.git
 ```
 
-### 3. `issued_books` Table
-```sql
-CREATE TABLE issued_books (
-    issue_id INT PRIMARY KEY AUTO_INCREMENT,
-    book_id INT NOT NULL,
-    member_id INT NOT NULL,
-    issue_date DATE NOT NULL,
-    due_date DATE NOT NULL,
-    return_date DATE,
-    status VARCHAR(20) DEFAULT 'Issued',
-    FOREIGN KEY (book_id) REFERENCES books(book_id),
-    FOREIGN KEY (member_id) REFERENCES members(member_id)
-);
+Move into the project directory:
+
+```bash
+cd Library-Management-System
 ```
 
----
+### 2. Create the MySQL Database
 
-## 🚀 How to Run
+Open MySQL:
 
-### Prerequisites
-1. **JDK 17 or higher** installed and added to `PATH`.
-2. **MySQL Server** installed and running on `localhost:3306`.
-3. **MySQL Connector/J JAR** (`mysql-connector-j-x.x.x.jar`).
+```bash
+mysql -u root -p
+```
 
-### Database Setup
-1. Open MySQL Command Line or MySQL Workbench.
-2. Run the provided SQL script in `sql/schema.sql` or create manually:
-   ```sql
-   CREATE DATABASE library_db;
-   USE library_db;
+Create the database:
 
-   -- Execute table creation SQL snippets provided in Database Schema section above
-   ```
-3. Update connection credentials in `src/database/DBConnection.java`:
-   ```java
-   private static final String URL = "jdbc:mysql://localhost:3306/library_db";
-   private static final String USER = "Your_Username";
-   private static final String PASSWORD = "Your_Password";
-   ```
+```sql
+CREATE DATABASE library_db;
+```
 
-### Compilation & Execution
+Use the database:
 
-#### Windows (PowerShell / CMD)
+```sql
+USE library_db;
+```
+
+Run the SQL script available in:
+
+```text
+sql/schema.sql
+```
+
+This creates the required tables for the application.
+
+### 3. Configure Database Credentials
+
+The application reads database credentials from environment variables.
+
+Set:
+
+```text
+DB_URL=jdbc:mysql://localhost:3306/library_db
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+```
+
+⚠️ **Do not commit your actual database password to GitHub.**
+
+For Windows PowerShell, the variables can be set using:
+
 ```powershell
-# Create bin directory for output classes
-mkdir bin
+$env:DB_URL="jdbc:mysql://localhost:3306/library_db"
+$env:DB_USER="root"
+$env:DB_PASSWORD = Read-Host "Enter MySQL password"
+```
 
-# Compile all Java source files (include MySQL JAR in classpath if using external lib folder)
-javac -d bin -cp "src;lib/*" src/database/*.java src/model/*.java src/util/*.java src/dao/*.java src/Main.java
+### 4. Compile the Project
 
-# Run Main class
+Run the following command from the project root in PowerShell:
+
+```powershell
+javac -d bin -cp "src;lib/*" (Get-ChildItem -Recurse -Filter *.java src).FullName
+```
+
+### 5. Run the Application
+
+```powershell
 java -cp "bin;lib/*" Main
 ```
 
+## 📋 Main Menu
+
+When the application starts, the following options are available:
+
+```text
+1.  Add Book
+2.  View Books
+3.  Search Book
+4.  Update Book
+5.  Delete Book
+6.  Add Member
+7.  View Members
+8.  Issue Book
+9.  Return Book
+10. Fine Details
+11. Exit
+```
+
+## 📖 Book Management
+
+The application supports complete book management operations:
+
+- Add new books
+- View all books
+- Search for books
+- Update book information
+- Delete books
+- Track total and available copies
+
+## 👤 Member Management
+
+Library members can be managed using:
+
+- Add Member
+- View Members
+
+Member information is stored in the MySQL database.
+
+## 🔄 Issue and Return Management
+
+Books can be issued to registered members.
+
+When a book is issued:
+
+- The issue date is recorded
+- A due date is generated
+- Available book quantity is reduced
+- Issue information is stored in the database
+
+When a book is returned:
+
+- The return date is recorded
+- The issue status is updated
+- Available book quantity is increased
+
+## 💰 Fine Calculation
+
+The system includes fine calculation functionality for overdue books.
+
+It supports:
+
+- Fine calculation for returned books
+- Current fine calculation for books that have not yet been returned
+- Due-date based calculation
+
+If a book is returned on or before the due date, no fine is charged.
+
+## 🧩 Concepts Implemented
+
+This project demonstrates the practical implementation of:
+
+- Object-Oriented Programming (OOP)
+- Classes and Objects
+- Constructors
+- Encapsulation
+- Getters and Setters
+- Interfaces
+- Interface Implementation
+- DAO Design Pattern
+- JDBC
+- SQL CRUD Operations
+- MySQL Database Integration
+- Prepared Statements
+- Exception Handling
+- Input Validation
+- Database Transactions
+- Git Version Control
+- GitHub Repository Management
+
+## 🎯 Learning Outcomes
+
+Through this project, I gained practical experience in connecting a **Java application with a MySQL database using JDBC**.
+
+I also learned how to organize a Java application using separate layers such as **Model, DAO, Database, Service, and Utility classes**.
+
+The project helped strengthen my understanding of:
+
+- Writing maintainable Java code
+- Working with relational databases
+- Performing CRUD operations
+- Using JDBC for database communication
+- Applying OOP concepts in a real project
+- Using the DAO pattern
+- Managing source code using Git
+- Publishing and maintaining a project on GitHub
+
+## 👨‍💻 Author
+
+**Rohineesh Bandari**
+
+Java Developer | Software Engineering Enthusiast
+
 ---
 
-## 🔮 Future Improvements
-
-- **GUI Interface**: Upgrade from Console UI to Swing / JavaFX or a Web Application (Spring Boot + React).
-- **Role-Based Access Control**: Separate admin (librarian) and user (student) login portals.
-- **Automated Fine Payment**: Integrate online payment gateway for overdue fines.
-- **Notification System**: Automated Email/SMS reminders for upcoming due dates.
-
----
-
-## 🎓 Learning Outcomes
-
-Through building this project, key concepts mastered include:
-1. **DAO Design Pattern**: Decoupling database persistence logic from application UI logic.
-2. **JDBC Best Practices**: Using `PreparedStatement` to prevent SQL Injection, and `try-with-resources` for auto-closing database connections.
-3. **ACID Transaction Management**: Managing multi-statement operations with `setAutoCommit(false)`, `commit()`, and `rollback()`.
-4. **Encapsulated Models**: Protecting entity states using Java beans conventions (`private` fields, getters/setters).
-5. **Robust Validation**: Building reusable validation utilities for input formats, business rules, and friendly SQL error handling.
-
----
-
-## 👤 Author
-
-**Junaid Khan**
-
-## Copyright
-
-© 2026 Junaid Khan. All Rights Reserved.
-
-This project is the original work of Junaid Khan.
-
-Unauthorized copying, modification, redistribution, publication,
-or presentation of this project as someone else's work is not permitted.
-
-If you reference this project, please provide proper attribution to
-Junaid Khan and the original repository.
+⭐ If you find this project useful, feel free to explore the repository.
