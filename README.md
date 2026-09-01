@@ -230,6 +230,44 @@ It supports:
 
 If a book is returned on or before the due date, no fine is charged.
 
+## 📸 Screenshots
+
+### 🏠 Main Menu
+
+The application provides a simple console-based menu for managing books, members, issuing/returning books, and fine details.
+
+![Main Menu](screenshots/main-menu.png)
+
+### 📚 Book Inventory
+
+Displays all books with their ID, title, author, category, total quantity, and currently available copies.
+
+![Book Inventory](screenshots/books.png)
+
+### 🔎 Search Books
+
+Books can be searched using a title keyword. The system displays all matching results along with their availability.
+
+![Search Books](screenshots/search-book.png)
+
+### 📖 Issue Book
+
+Books can be issued to registered library members. The system records the issue date and calculates the due date.
+
+![Issue Book](screenshots/issue-book.png)
+
+### 🔄 Return Book
+
+Issued books can be returned using the issue details, and the system updates the book availability accordingly.
+
+![Return Book](screenshots/return-book.png)
+
+### 💰 Fine Details
+
+The system provides fine calculation details based on the issue date, due date, and return date.
+
+![Fine Details](screenshots/fine-details.png)
+
 ## 🧩 Concepts Implemented
 
 This project demonstrates the practical implementation of:

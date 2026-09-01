@@ -167,19 +167,20 @@ public class Main {
         }
 
         // Header row
-        System.out.printf("  %-5s %-25s %-20s %-15s %-8s %-9s%n",
-                "ID", "Title", "Author", "Category", "Qty", "Available");
-        System.out.println("  " + "─".repeat(87));
+                System.out.printf("  %-5s %-30s %-22s %-15s %-8s %-9s%n",
+        "ID", "Title", "Author", "Category", "Qty", "Available");
+
+               System.out.println("  " + "─".repeat(97));
 
         // One row per book
         for (Book b : books) {
-            System.out.printf("  %-5d %-25s %-20s %-15s %-8d %-9d%n",
-                    b.getBookId(),
-                    truncate(b.getTitle(), 24),
-                    truncate(b.getAuthor(), 19),
-                    truncate(b.getCategory(), 14),
-                    b.getQuantity(),
-                    b.getAvailable());
+            System.out.printf("  %-5d %-30s %-22s %-15s %-8d %-9d%n",
+                b.getBookId(),
+                b.getTitle(),
+                b.getAuthor(),
+                b.getCategory(),
+                b.getQuantity(),
+                b.getAvailable());
         }
     }
 
