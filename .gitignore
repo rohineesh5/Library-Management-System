@@ -1,0 +1,22 @@
+# Compiled Java class files
+*.class
+
+# Output directories
+/bin/
+/target/
+/out/
+
+# IDE specific files
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Environment variables / database credentials
+.env
